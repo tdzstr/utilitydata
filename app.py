@@ -7,8 +7,7 @@ from openai import OpenAI
 
 # Use secrets from .streamlit/secrets.toml or Streamlit Cloud
 client = OpenAI(
-    api_key=st.secrets["OPENAI_API_KEY"],
-    organization=st.secrets["OPENAI_ORG_ID"]
+    api_key=st.secrets["OPENAI_API_KEY"]
 )
 
 st.set_page_config(page_title="AI Dashboard Generator", layout="wide")
