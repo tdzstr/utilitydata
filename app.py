@@ -57,3 +57,22 @@ if uploaded_file:
             chart_type = suggestion["chart_type"].lower()
             x = suggestion["x"]
             y = suggestion["y"]
+            reason = suggestion["reason"]
+
+            st.markdown(f"### Chart {i+1}: {chart_type.title()} – {reason}")
+            if chart_type == "line":
+                fig = px.line(df, x=x, y=y)
+            elif chart_type == "bar":
+                fig = px.bar(df, x=x, y=y)
+            elif chart_type == "scatter":
+                fig = px.scatter(df, x=x, y=y)
+            elif chart_type == "pie":
+                fig = px.pie(df, names=x, values=y)
+            else:
+                st.warning(f"Unsupported chart type: {chart_type}")
+                continue
+
+            st.plotly_chart(fig, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Failed to generate visualizations: {e}")
