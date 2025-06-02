@@ -1,15 +1,14 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import os
 import json
 import re
 from openai import OpenAI
 
-# Set your OpenAI API key
+# Use secrets from .streamlit/secrets.toml or Streamlit Cloud
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    organization=os.getenv("OPENAI_ORG_ID")
+    api_key=st.secrets["OPENAI_API_KEY"],
+    organization=st.secrets["OPENAI_ORG_ID"]
 )
 
 st.set_page_config(page_title="AI Dashboard Generator", layout="wide")
