@@ -41,7 +41,7 @@ if uploaded_file:
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an expert in data visualization. Only reply in valid JSON without any extra commentary."},
                 {"role": "user", "content": prompt}
