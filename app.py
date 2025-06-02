@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
-import openai
 import plotly.express as px
 import os
-import json  # Added to handle JSON safely
+import json
+import re
+from openai import OpenAI
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
 st.set_page_config(page_title="AI Dashboard Generator", layout="wide")
 st.title("📊 AI-Powered CSV Dashboard")
@@ -39,7 +40,7 @@ if uploaded_file:
     )
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an expert in data visualization. Only reply in valid JSON without any extra commentary."},
@@ -48,29 +49,11 @@ if uploaded_file:
             temperature=0.3
         )
 
-        suggestions = json.loads(response.choices[0].message.content)  # Replaced eval with safe json.loads
+        raw_response = response.choices[0].message.content.strip()
+        clean_response = re.sub(r"^```json|```$", "", raw_response).strip()
+        suggestions = json.loads(clean_response)
 
         for i, suggestion in enumerate(suggestions):
             chart_type = suggestion["chart_type"].lower()
             x = suggestion["x"]
             y = suggestion["y"]
-            reason = suggestion["reason"]
-
-            st.markdown(f"### Chart {i+1}: {chart_type.title()} – {reason}")
-            if chart_type == "line":
-                fig = px.line(df, x=x, y=y)
-            elif chart_type == "bar":
-                fig = px.bar(df, x=x, y=y)
-            elif chart_type == "scatter":
-                fig = px.scatter(df, x=x, y=y)
-            elif chart_type == "pie":
-                fig = px.pie(df, names=x, values=y)
-            else:
-                st.warning(f"Unsupported chart type: {chart_type}")
-                continue
-
-            st.plotly_chart(fig, use_container_width=True)
-
-    except Exception as e:
-        st.error(f"Failed to generate visualizations: {e}")
-
