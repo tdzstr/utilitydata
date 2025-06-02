@@ -40,6 +40,14 @@ if uploaded_file:
         "]"
     )
 
+    st.subheader("Or describe the chart you want")
+
+    user_prompt = st.text_input("Describe a chart you'd like to see (e.g., 'line chart of Sales over Time'):")
+
+    if user_prompt:
+        prompt += f"\n\nAdditionally, the user requests: \"{user_prompt}\""
+
+    
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
